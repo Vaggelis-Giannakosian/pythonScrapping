@@ -3,15 +3,11 @@ import re
 import pprint
 from bs4 import BeautifulSoup
 
-res = requests.get('https://news.ycombinator.com/')
-soup = BeautifulSoup(res.text, 'html.parser')
-links = soup.select('.storylink')
-subtext = soup.select('.subtext')
 
 scorepattern = re.compile(r"^(\d+).*")
 
 def sort_stories_by_votes(hn):
-    return sorted(hn, key=lambda k: k['score'],reverse=True)
+    return sorted(hn, key=lambda k: k['score'], reverse=True)
 
 
 def create_custom_hn(links, subtext):
@@ -24,16 +20,21 @@ def create_custom_hn(links, subtext):
         if len(vote):
             score = scorepattern.search(vote[0].getText()).group(1)
 
-
-        if int(score) > 100 :
+        if int(score) > 99:
             hn.append({'title': title, 'link': href, 'score': score})
     return sort_stories_by_votes(hn)
 
+hn = []
+links = []
+subtext = []
+for i in range(1,3):
+    res = requests.get(f'https://news.ycombinator.com/news?p={i}')
+    soup = BeautifulSoup(res.text, 'html.parser')
+    links = links + soup.select('.storylink')
+    subtext = subtext + soup.select('.subtext')
 
-hn = create_custom_hn(links, subtext)
-print(len(hn))
+hn = create_custom_hn(links,subtext)
+pprint.pprint(len(hn))
 pprint.pprint(hn)
 
-# print(votes[0].get('id'))
-# print(links)
-# print(votes)
+
