@@ -24,6 +24,7 @@ def create_custom_hn(links, subtext):
         if len(vote):
             score = scorepattern.search(vote[0].getText()).group(1)
 
+
         if int(score) > 100 :
             hn.append({'title': title, 'link': href, 'score': score})
     return sort_stories_by_votes(hn)
